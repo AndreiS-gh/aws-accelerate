@@ -1,0 +1,14 @@
+{
+  "InstanceIds": ["i-07aef15a7b4ac1324"],
+  "DocumentName": "AWS-RunShellScript",
+  "Comment": "Install Apache",
+  "Parameters": {
+    "commands": [
+      "sudo yum update -y",
+      "sudo yum install -y httpd",
+      "sudo systemctl start httpd",
+      "sudo systemctl enable httpd",
+      "echo '<html><body><h1>Hello World</h1></body></html>' | sudo tee /var/www/html/index.html"
+    ]
+  }
+}

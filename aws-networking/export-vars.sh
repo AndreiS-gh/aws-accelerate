@@ -1,9 +1,29 @@
 #!/bin/bash
 
 # Ensure NAME environment variable is set
-#export NAME=add_your_name
-# uncomment and change with your manually created domain
-export DOMAIN_NAME=changeme.net
+# export NAME=add_your_name
+# Uncomment and change with your manually created domain
+#export DOMAIN_NAME=changeme.net
+
+# Function to check if a resource is in a desired state
+check_resource_state() {
+    local resource_type=$1
+    local resource_id=$2
+    local state_key=$3
+    local desired_state=$4
+
+    # Query the resource state
+    current_state=$(aws $resource_type describe --$resource_id --query "$state_key" --output text 2>/dev/null)
+
+    # Check if the current state matches the desired state
+    if [ "$current_state" == "$desired_state" ]; then
+        echo "Resource is in the desired state ($desired_state)."
+        return 1
+    else
+        echo "Resource is not in the desired state. Current state: $current_state."
+        return 0
+    fi
+}
 
 # Get VPC ID
 export VPC_ID=$(aws ec2 describe-vpcs --filters "Name=tag:Name,Values=${NAME}-vpc" --query 'Vpcs[0].VpcId' --output text)
@@ -41,6 +61,13 @@ echo "Private Route Table ID: $PRIVATE_ROUTE_TABLE_ID"
 export NAT_GW_ID=$(aws ec2 describe-nat-gateways --filter "Name=tag:Name,Values=${NAME}-nat-gw" --query 'NatGateways[0].NatGatewayId' --output text)
 echo "NAT Gateway ID: $NAT_GW_ID"
 
+# Check and export NAT Gateway ID only if not deleted
+if [ "$NAT_GW_ID" != "None" ]; then
+    if check_resource_state "ec2" "nat-gateways/$NAT_GW_ID" "NatGateways[0].State" "deleted"; then
+        export NAT_GW_ID=None
+    fi
+fi
+
 # Get Elastic IP Allocation ID for NAT Gateway
 export EIP_ALLOC_ID=$(aws ec2 describe-addresses --filters "Name=tag:Name,Values=${NAME}-eip" --query 'Addresses[0].AllocationId' --output text)
 echo "Elastic IP Allocation ID: $EIP_ALLOC_ID"
@@ -48,6 +75,13 @@ echo "Elastic IP Allocation ID: $EIP_ALLOC_ID"
 # Get EC2 Instance ID
 export INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=${NAME}-ec2" --query 'Reservations[0].Instances[0].InstanceId' --output text)
 echo "EC2 Instance ID: $INSTANCE_ID"
+
+# Check and export EC2 Instance ID only if not terminated
+if [ "$INSTANCE_ID" != "None" ]; then
+    if check_resource_state "ec2" "instances/$INSTANCE_ID" "Reservations[0].Instances[0].State.Name" "terminated"; then
+        export INSTANCE_ID=None
+    fi
+fi
 
 # Get Load Balancer ARN
 export LB_ARN=$(aws elbv2 describe-load-balancers --names ${NAME}-lb --query 'LoadBalancers[0].LoadBalancerArn' --output text)
