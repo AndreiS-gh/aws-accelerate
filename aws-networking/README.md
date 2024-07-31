@@ -8,15 +8,14 @@ By following this guide, you will gain hands-on experience with setting up VPCs,
 
 Before you begin, ensure you have the following ready:
 
-- An AWS account along with your access key and secret.
-- AWS CLI configured on your machine.
-- Ubuntu environment to run the CLI commands.
-- AWS CLI configured with default credentials and region.
+- Ubuntu environment to run the CLI commands. (preferred)
 - `jq` is installed (for Ubuntu run: `sudo apt-get update && sudo apt install jq`)
+- [AWS CLI configured on your machine](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+- An AWS account along with your access key and secret.
 
 ## B. Configure AWS CLI
 
-1. **Set up AWS CLI Credentials**: Run `aws configure` and set your default region (e.g., `eu-central-1`), providing your access key and secret when prompted.
+1. **Set up AWS CLI Credentials**: Run `aws configure` and set your default region (e.g., `eu-central-1`), default output format (e.g., `json`) providing your access key and secret when prompted.
 
 2. **Set Environment Variable**: Set the `NAME` environment variable to ensure unique resource names:
 
