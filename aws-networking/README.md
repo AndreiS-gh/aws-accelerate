@@ -301,3 +301,137 @@ After completing these steps, your website should be accessible via the DNS name
     ```bash
     curl http://${NAME}-webapp.${DOMAIN_NAME}
     ```
+
+
+### Integtrate With CloudFront (OPTIONAL - DO NOT EXECUTE ABOVE THIS STEP UNLESS OTHERWISE ADVISED)
+
+1. **Create an S3 Bucket for Logging (Optional)**
+
+    ```bash
+    aws s3api create-bucket --bucket ${NAME}-cf-logs --region $(aws configure get region) --create-bucket-configuration LocationConstraint=$(aws configure get region)
+    ```
+
+2. **Create CloudFront Distribution**
+
+    ```bash
+    CF_DISTRIBUTION_ID=$(aws cloudfront create-distribution --origin-domain-name $(aws elbv2    describe-load-balancers --load-balancer-arns $LB_ARN --query 'LoadBalancers[0].DNSName' --output text)     --default-root-object index.html --query 'Distribution.Id' --output text)
+    echo "CloudFront Distribution ID: $CF_DISTRIBUTION_ID"
+    ```    
+
+3. **Configure CloudFront Distribution**
+
+    ```bash
+    cat <<EoF > cloudfront-config.json
+    {
+    "DistributionConfig": {
+        "CallerReference": "${NAME}-cf-distribution",
+        "Origins": {
+            "Quantity": 1,
+            "Items": [
+                {
+                    "Id": "${NAME}-alb",
+                    "DomainName": "$(aws elbv2 describe-load-balancers --load-balancer-arns $LB_ARN --query 'LoadBalancers[0].DNSName' --output text)",
+                    "OriginPath": "",
+                    "CustomHeaders": {
+                        "Quantity": 0
+                    },
+                    "CustomOriginConfig": {
+                        "HTTPPort": 80,
+                        "HTTPSPort": 443,
+                        "OriginProtocolPolicy": "http-only",
+                        "OriginSslProtocols": {
+                            "Quantity": 3,
+                            "Items": [
+                                "TLSv1",
+                                "TLSv1.1",
+                                "TLSv1.2"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        "DefaultCacheBehavior": {
+            "TargetOriginId": "${NAME}-alb",
+            "ForwardedValues": {
+                "QueryString": false,
+                "Cookies": {
+                    "Forward": "none"
+                },
+                "Headers": {
+                    "Quantity": 0
+                },
+                "QueryStringCacheKeys": {
+                    "Quantity": 0
+                }
+            },
+            "TrustedSigners": {
+                "Enabled": false,
+                "Quantity": 0
+            },
+            "ViewerProtocolPolicy": "allow-all",
+            "MinTTL": 0,
+            "AllowedMethods": {
+                "Quantity": 2,
+                "Items": [
+                    "HEAD",
+                    "GET"
+                ],
+                "CachedMethods": {
+                    "Quantity": 2,
+                    "Items": [
+                        "HEAD",
+                        "GET"
+                    ]
+                }
+            },
+            "SmoothStreaming": false,
+            "DefaultTTL": 86400,
+            "MaxTTL": 31536000,
+            "Compress": false
+        },
+        "Comment": "",
+        "Logging": {
+            "Enabled": true,
+            "IncludeCookies": false,
+            "Bucket": "${NAME}-cf-logs.s3.amazonaws.com",
+            "Prefix": ""
+        },
+        "PriceClass": "PriceClass_All",
+        "Enabled": true
+    }
+    }
+    EoF
+    ```  
+4. **Create the CloudFront distribution using the configuration file**
+
+    ```bash
+    CF_DISTRIBUTION_ID=$(aws cloudfront create-distribution --distribution-config file://cloudfront-config.json --query 'Distribution.Id' --output text)
+    CF_DOMAIN_NAME=$(aws cloudfront get-distribution --id $CF_DISTRIBUTION_ID --query 'Distribution.DomainName' --output text)
+    echo "CloudFront Distribution ID: $CF_DISTRIBUTION_ID"
+    echo "CloudFront Domain Name: $CF_DOMAIN_NAME"
+    ```   
+5. **Update Route 53 DNS Record**
+
+    ```bash
+    aws route53 change-resource-record-sets --hosted-zone-id $HOSTED_ZONE_ID --change-batch '{
+        "Changes": [{
+            "Action": "UPSERT",
+            "ResourceRecordSet": {
+                "Name": "'${NAME}'-webapp.'${DOMAIN_NAME}'",
+                "Type": "A",
+                "AliasTarget": {
+                    "HostedZoneId": "Z2FDTNDATAQYW2",
+                    "DNSName": "'${CF_DOMAIN_NAME}'",
+                    "EvaluateTargetHealth": false
+                }
+            }
+        }]
+    }'
+
+    ```       
+6. **Accessing the Website via CloudFront**
+
+    ```bash
+    curl http://${NAME}-webapp.${DOMAIN_NAME}
+    ```         
