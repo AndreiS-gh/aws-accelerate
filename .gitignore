@@ -32,6 +32,9 @@
 # SSH and key files
 **/*.pem
 **/*.key
+**/*.txt
+**/*.deb
+**/*.rpm
 
 # IDE and Editor Specific Files
 **/.idea/
