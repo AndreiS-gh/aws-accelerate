@@ -11,6 +11,7 @@ Before you begin, ensure you have the following ready:
 - Ubuntu environment to run the CLI commands. (preferred)
 - `jq` is installed (for Ubuntu run: `sudo apt-get update && sudo apt install jq`)
 - [AWS CLI configured on your machine](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+- 
 - An AWS account along with your access key and secret. Once you have your credentials, [login](https://console.aws.amazon.com/) to the console, then [generate a new Access KEY](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey) and save it securely as a CSV.
 - Existing VPC and subnets.
 
@@ -53,7 +54,7 @@ Before you begin, ensure you have the following ready:
     aws s3 cp testfile.txt s3://${NAME}-bucket/
     echo "Test File Uploaded to S3 Bucket: ${NAME}-bucket"
     ```
-## D. Deploy an S3 Bucket
+## D. Deploy an EC2 Instance
 1. **Create IAM Role and Instance Profile for SSM**:
 
     - **Create IAM Role**:
