@@ -34,47 +34,43 @@ This workshop provides hands-on experience with securing AWS resources, focusing
   1. **VPC Creation:**
      - Open the VPC Dashboard and click `Create VPC`.
      - Choose `VPC only` and configure the following:
-       - Name: `SecureVPC`
+       - Name: `SecureVPC"yourname"`
        - IPv4 CIDR block: `10.0.0.0/16`
        - Tenancy: Default
      - Click `Create VPC`.
 
   2. **Subnet Configuration:**
      - **Public Subnet:**
-       - Name: `PublicSubnet`
+       - Name: `PublicSubnet"yourname"`
        - IPv4 CIDR block: `10.0.1.0/24`
        - Availability Zone: Choose any available.
        - Auto-assign public IPv4: Enable.
      - **Private Subnet:**
-       - Name: `PrivateSubnet`
+       - Name: `PrivateSubnet"yourname"`
        - IPv4 CIDR block: `10.0.2.0/24`
        - Availability Zone: Same as the public subnet.
-     - Create both subnets within `SecureVPC`.
+     - Create both subnets within `SecureVPC"yourname"`.
 
   3. **Internet Gateway:**
-     - Create an Internet Gateway (IGW) and attach it to `SecureVPC`.
-     - Update the route table for `PublicSubnet`:
+     - Create an Internet Gateway (IGW) and attach it to `SecureVPC"yourname"`.
+     - Update the route table for `PublicSubnet"yourname"`:
        - Destination: `0.0.0.0/0`
        - Target: `IGW-ID`
 
   4. **NAT Gateway:**
      - Create an Elastic IP for the NAT Gateway.
-     - Create a NAT Gateway in `PublicSubnet`, associating it with the Elastic IP.
-     - Update the route table for `PrivateSubnet`:
+     - Create a NAT Gateway in `PublicSubnet"yourname"`, associating it with the Elastic IP.
+     - Update the route table for `PrivateSubnet"yourname"`:
        - Destination: `0.0.0.0/0`
        - Target: `NAT-Gateway-ID`
 
   5. **Security Groups:**
-     - Create a security group named `PublicSG` for `SecureVPC`:
+     - Create a security group named `PublicSG"yourname"` for `SecureVPC"yourname"`:
        - Inbound Rules: Allow SSH (Port 22) from your IP.
        - Outbound Rules: Allow all traffic.
-     - Create another security group named `PrivateSG` for instances in `PrivateSubnet`:
-       - Inbound Rules: Allow traffic from `PublicSG` only.
+     - Create another security group named `PrivateSG"yourname"` for instances in `PrivateSubnet"yourname"`:
+       - Inbound Rules: Allow traffic from `PublicSG"yourname"` only.
        - Outbound Rules: Allow all traffic.
-
-- **Test:**
-  - Launch a small EC2 instance in `PublicSubnet` using `PublicSG`. Verify SSH access is only available from your IP.
-  - Launch another EC2 instance in `PrivateSubnet` using `PrivateSG`. Ensure it is not directly accessible from the internet but can access the internet via the NAT Gateway.
 
 ---
 
@@ -87,22 +83,22 @@ This workshop provides hands-on experience with securing AWS resources, focusing
   1. **Launch an Instance in Public Subnet:**
      - AMI: Amazon Linux 2.
      - Instance Type: `t2.micro`.
-     - Network: `SecureVPC`, Subnet: `PublicSubnet`.
-     - Security Group: `PublicSG`.
+     - Network: `SecureVPC"yourname"`, Subnet: `PublicSubnet"yourname"`.
+     - Security Group: `PublicSG"yourname"`.
      - Enable EBS encryption using a default KMS key or a custom key created in a later step.
      - Launch the instance.
 
   2. **Launch an Instance in Private Subnet:**
      - AMI: Amazon Linux 2.
      - Instance Type: `t2.micro`.
-     - Network: `SecureVPC`, Subnet: `PrivateSubnet`.
-     - Security Group: `PrivateSG`.
+     - Network: `SecureVPC"yourname"`, Subnet: `PrivateSubnet"yourname"`.
+     - Security Group: `PrivateSG"yourname"`.
      - Enable EBS encryption as above.
      - Launch the instance.
 
 - **Test:**
-  - Verify that the instance in `PublicSubnet` can be accessed via SSH from your IP.
-  - Confirm that the instance in `PrivateSubnet` cannot be accessed directly from the internet. Attempt SSH access from the `PublicSubnet` instance.
+  - Verify that the instance in `PublicSubnet"yourname"` can be accessed via SSH from your IP.
+  - Confirm that the instance in `PrivateSubnet"yourname"` cannot be accessed directly from the internet. Attempt SSH access from the `PublicSubnet"yourname"` instance.
 
 ---
 
@@ -120,27 +116,27 @@ This workshop provides hands-on experience with securing AWS resources, focusing
   2. **Publishing Custom Metrics (Using AWS CLI):**
      - Install the necessary CloudWatch agent on your instances.
      - Use the AWS CLI to push custom metrics (e.g., memory usage):
-       ```bash
-       aws cloudwatch put-metric-data --metric-name MemoryUsage --namespace "CustomMetrics" --unit Percent --value 70.5
+       ```
+       aws cloudwatch put-metric-data --metric-name MemoryUsage"yourname" --namespace "CustomMetrics" --unit Percent --value 70.5
        ```
      - Repeat for any other custom metrics you wish to monitor.
 
   3. **Create a CloudWatch Alarm (Using AWS CLI):**
      - Example: Create an alarm for high CPU utilization:
-       ```bash
-       aws cloudwatch put-metric-alarm --alarm-name "HighCPUAlarm" --metric-name CPUUtilization --namespace AWS/EC2 \
+       ```
+       aws cloudwatch put-metric-alarm --alarm-name "HighCPUAlarm"yourname"" --metric-name CPUUtilization --namespace AWS/EC2 \
        --statistic Average --period 300 --threshold 80 --comparison-operator GreaterThanOrEqualToThreshold \
        --dimensions Name=InstanceId,Value=<Instance-ID> --evaluation-periods 1 --alarm-actions <SNS-Topic-ARN>
        ```
      - Replace `<Instance-ID>` with your EC2 instance ID and `<SNS-Topic-ARN>` with your SNS topic ARN.
 
   4. **Creating a CloudWatch Dashboard:**
-     - In the CloudWatch Console, create a new dashboard.
+     - In the CloudWatch Console, create a new dashboard with `"yourname"`.
      - Add widgets to monitor CPU utilization, network traffic, and your custom metrics.
   
 - **Test:**
   - Simulate high CPU load on the public EC2 instance:
-    ```bash
+    ```
     yes > /dev/null &
     ```
   - Verify that the `HighCPUAlarm` triggers and sends a notification via SNS.
@@ -158,17 +154,18 @@ This workshop provides hands-on experience with securing AWS resources, focusing
 
   1. **Create a CloudTrail Trail:**
      - Open the CloudTrail Dashboard, click `Create trail`.
-     - Name: `SecureTrail`.
+     - Name: `SecureTrail"yourname"`.
      - Apply to all regions: Yes.
-     - Specify an S3 bucket for log storage (enable encryption with KMS).
+     - In paralele Create dedicated bucket for Cloudtrail - Name:`CloudTrail"yourname"`
+     - Specify previous S3 bucket for log storage (enable encryption with KMS) 
      - Enable log file validation and CloudWatch logs integration.
 
-  2. **Setup SNS Notifications:**
-     - Create an SNS topic for security alerts.
+  3. **Setup SNS Notifications:**
+     - Create an SNS topic for security alerts with "yourname" in the namie of the topic.
      - Subscribe your email to the SNS topic.
      - Configure the CloudTrail trail to send notifications to this SNS topic for specific events (e.g., unauthorized access attempts).
 
-  3. **Analyze CloudTrail Logs:**
+  4. **Analyze CloudTrail Logs:**
      - Use the AWS Management Console or Athena to query and analyze logs.
      - Example query to find all IAM-related activities:
        ```sql
