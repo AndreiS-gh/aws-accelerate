@@ -190,20 +190,36 @@ This workshop provides hands-on experience with securing AWS resources, focusing
 
 - **Steps:**
 - ***Create a Single-Region Symmetrical KMS Key***
-  1. Navigate to Amazon S3 using the Services menu or the unified search bar.
-  2. Confirm you see a bucket that starts with the cloud-user prefix.
-  3. Click on the bucket, and navigate to the Properties tab.
-  4. Using the search bar, type and select Key Management Service.
-  5. Under Get started now, click Create a key.
-  6. Under Key type, ensure Symmetric is selected.
-  7. Under key usage, ensure Encrypt and decrypt is selected.
-  8. Under Advanced options, ensure Regionality is set to Single-Region key, and Key material origin is set to KMS.
-  9. Click Next.
-  10. Under Alias, enter "youruser" 
-  11. Click Next.
-  12. Under Key administrators, click on the checkbox next to "youruser".
-  13. Under Key deletion, ensure Allow key administrators to delete this key is selected.
-  14. Click Next until you get to the Review page, then click Finish.
+    -  Navigate to Amazon S3 using the Services menu or the unified search bar.
+    -  Confirm you see a bucket that starts with the cloud-user prefix.
+    -  Click on the bucket, and navigate to the Properties tab.
+    -  Using the search bar, type and select Key Management Service.
+    -  Under Get started now, click Create a key.
+    -  Under Key type, ensure Symmetric is selected.
+    -  Under key usage, ensure Encrypt and decrypt is selected.
+    -  Under Advanced options, ensure Regionality is set to Single-Region key, and Key material origin is set to KMS.Click Next.
+    -  Under Alias, enter `"youruser"` .Click Next.
+    -  Under Key administrators, click on the checkbox next to cloud_user.
+    -  Under Key deletion, ensure Allow key administrators to delete this key is selected.
+    -  Click Next until you get to the Review page, then click Finish.
+
+- ***Set Up Amazon S3 Default Encryption via KMS***
+    -  Navigate to Amazon S3 using the shortcut bar or the unified search bar.
+    -  Click on the bucket, and navigate to the Properties tab.
+    -  Scroll down to Default encryption, and click Edit.
+    -  Under Default encryption, set the following values:
+    -  Encryption key type: Select AWS Key Management Service key (SSE-KMS).
+    -  AWS KMS key: Select Choose from your AWS KMS keys.
+    -  Under Available AWS KMS keys, click on the dropdown menu and select `"youruser"`.
+    -  Bucket Key: Select Enable.
+    -  Click Save changes.
+    -  Navigate to the Objects tab, and click on Upload.
+    -  Choose a file you would like to upload.
+    -  Click Upload.
+    -  Once you see the Upload succeeded banner, click Close in the upper right corner.
+    -  Click on the file you uploaded.
+    -  Scroll down to Server-side encryption settings to confirm you successfully implemented the KMS key.
+- ***
 ---
 ## 8. AWS Security Hub
 
