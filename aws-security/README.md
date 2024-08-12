@@ -216,6 +216,10 @@ This workshop provides hands-on experience with securing AWS resources, focusing
   2. ** Check the available standards and see how many vulnerabilities present on each of them **
   3. ** In AWS Services Search bar type "Trusted Advisor" and open it **
   4. ** Go to Recommendations" and see what issues are present that you can resolve **
+  5. ** In AWS Services Search bar type "AWS Artifact" and open it **
+  6. ** Check available standard reports that can be extracted **
+  7. ** In AWS Services Search bar type "AWS Inspector" and open it **
+  8. ** Check available menu options **
   
 ---
 
