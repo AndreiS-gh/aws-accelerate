@@ -228,7 +228,7 @@ This workshop provides hands-on experience with securing AWS resources, focusing
     -  Click Schedule deletion.
       
 ---
-## 6. AWS Security Hub
+## 6. AWS Security Solutions
 
 ### Use AWS Native Security Solutions
 
