@@ -102,7 +102,7 @@ This workshop provides hands-on experience with securing AWS resources, focusing
 
 ---
 
-## 4. Monitoring with CloudWatch
+## 3. Monitoring with CloudWatch
 
 ### Setting Up CloudWatch Alarms and Custom Metrics
 
@@ -149,7 +149,7 @@ This workshop provides hands-on experience with securing AWS resources, focusing
 
 ---
 
-## 5. Auditing with CloudTrail
+## 4. Auditing with CloudTrail
 
 ### Configuring CloudTrail for Comprehensive Auditing
 
@@ -184,7 +184,7 @@ This workshop provides hands-on experience with securing AWS resources, focusing
   - Review SNS notifications to ensure they trigger correctly on specific events.
 
 ---
-## 7. AWS KMS
+## 5. AWS KMS
 
 ### Creating and Securing Customer Managed Keys with AWS KMS
 
@@ -228,7 +228,7 @@ This workshop provides hands-on experience with securing AWS resources, focusing
     -  Click Schedule deletion.
       
 ---
-## 8. AWS Security Hub
+## 6. AWS Security Hub
 
 ### Use AWS Native Security Solutions
 
