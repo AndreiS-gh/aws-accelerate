@@ -102,7 +102,7 @@ This workshop provides hands-on experience with securing AWS resources, focusing
 
 ---
 
-## 3. Monitoring with CloudWatch
+## 4. Monitoring with CloudWatch
 
 ### Setting Up CloudWatch Alarms and Custom Metrics
 
@@ -149,7 +149,7 @@ This workshop provides hands-on experience with securing AWS resources, focusing
 
 ---
 
-## 4. Auditing with CloudTrail
+## 5. Auditing with CloudTrail
 
 ### Configuring CloudTrail for Comprehensive Auditing
 
@@ -184,28 +184,28 @@ This workshop provides hands-on experience with securing AWS resources, focusing
   - Review SNS notifications to ensure they trigger correctly on specific events.
 
 ---
+## 7. AWS KMS
 
-## 5. Data Protection and Encryption with AWS KMS
-
-### Implementing Advanced Encryption Techniques with AWS KMS
-
-- **Objective:** Protect sensitive data using AWS KMS for encryption across various AWS services.
+### Creating and Securing Customer Managed Keys with AWS KMS
 
 - **Steps:**
-
-  1. **Create a Customer Managed Key (CMK):**
-     - Go to the KMS Dashboard and create a new CMK.
-     - Configure key policies, restricting usage to necessary IAM users and roles.
-     - Enable automatic key rotation.
-
-  2. **Encrypt S3 Buckets:**
-     - Create an S3 bucket for sensitive data and enable server-side encryption using your CMK.
-     - Update bucket policies to enforce encryption and restrict access.
-
-  
+- ***Create a Single-Region Symmetrical KMS Key***
+  1. Navigate to Amazon S3 using the Services menu or the unified search bar.
+  2. Confirm you see a bucket that starts with the cloud-user prefix.
+  3. Click on the bucket, and navigate to the Properties tab.
+  4. Using the search bar, type and select Key Management Service.
+  5. Under Get started now, click Create a key.
+  6. Under Key type, ensure Symmetric is selected.
+  7. Under key usage, ensure Encrypt and decrypt is selected.
+  8. Under Advanced options, ensure Regionality is set to Single-Region key, and Key material origin is set to KMS.
+  9. Click Next.
+  10. Under Alias, enter "youruser" 
+  11. Click Next.
+  12. Under Key administrators, click on the checkbox next to "youruser".
+  13. Under Key deletion, ensure Allow key administrators to delete this key is selected.
+  14. Click Next until you get to the Review page, then click Finish.
 ---
-
-## 6. AWS Security Hub
+## 8. AWS Security Hub
 
 ### Use AWS Native Security Solutions
 
