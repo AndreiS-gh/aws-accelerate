@@ -161,7 +161,7 @@ This workshop provides hands-on experience with securing AWS resources, focusing
      - Open the CloudTrail Dashboard, click `Create trail`.
      - Name: `SecureTrail"yourname"`.
      - Apply to all regions: Yes.
-     - In paralele Create dedicated bucket for Cloudtrail - Name:`CloudTrail"yourname"`
+     - In paralel Create dedicated bucket for Cloudtrail - Name:`CloudTrail"yourname"`
      - Specify previous S3 bucket for log storage (enable encryption with KMS) 
      - Enable log file validation and CloudWatch logs integration.
 
