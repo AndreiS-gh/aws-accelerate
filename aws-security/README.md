@@ -202,20 +202,7 @@ This workshop provides hands-on experience with securing AWS resources, focusing
      - Create an S3 bucket for sensitive data and enable server-side encryption using your CMK.
      - Update bucket policies to enforce encryption and restrict access.
 
-  3. **Cross-Service Encryption:**
-     - **EBS Volumes:** Ensure that new EBS volumes are encrypted using the CMK.
-     - **RDS Databases:** Encrypt RDS databases using the CMK during creation.
-     - **Lambda Functions:** Encrypt environment variables in Lambda functions using the CMK.
   
-  4. **Monitor Key Usage:**
-     - Enable CloudTrail to log all KMS activities.
-     - Set up CloudWatch Alarms for unusual key usage patterns.
-
-- **Test:**
-  - Upload sensitive data to the S3 bucket and verify it is encrypted with the CMK.
-  - Check CloudTrail logs for key usage activities and validate that they are recorded.
-  - Create a CloudWatch alarm that triggers on unauthorized key access attempts.
-
 ---
 
 ## 6. AWS Security Hub
@@ -225,8 +212,10 @@ This workshop provides hands-on experience with securing AWS resources, focusing
 - **Objective:** Use AWS Native solutions to check on environment security according to various standards.
 
 - **Steps:**
-  1. ** In AWS Services Search bar type "Security Hub" and open it**
+  1. ** In AWS Services Search bar type "Security Hub" and open it **
   2. ** Check the available standards and see how many vulnerabilities present on each of them **
+  3. ** In AWS Services Search bar type "Trusted Advisor" and open it **
+  4. ** Go to Recommendations" and see what issues are present that you can resolve **
   
 ---
 
