@@ -136,8 +136,13 @@ This workshop provides hands-on experience with securing AWS resources, focusing
   
 - **Test:**
   - Simulate high CPU load on the public EC2 instance:
+  - Install stress
     ```
-    yes > /dev/null &
+    sudo yum install stress
+    ```
+  - Run stress test
+    ```
+    stress --cpu 2
     ```
   - Verify that the `HighCPUAlarm` triggers and sends a notification via SNS.
   - Check that the custom metrics appear on the CloudWatch dashboard.
@@ -211,6 +216,18 @@ This workshop provides hands-on experience with securing AWS resources, focusing
   - Check CloudTrail logs for key usage activities and validate that they are recorded.
   - Create a CloudWatch alarm that triggers on unauthorized key access attempts.
 
+---
+
+## 6. AWS Security Hub
+
+### Use AWS Native Security Solutions
+
+- **Objective:** Use AWS Native solutions to check on environment security according to various standards.
+
+- **Steps:**
+  1. ** In AWS Services Search bar type "Security Hub" and open it**
+  2. ** Check the available standards and see how many vulnerabilities present on each of them **
+  
 ---
 
 ## Best Practices
