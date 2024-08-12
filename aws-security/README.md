@@ -205,7 +205,7 @@ This workshop provides hands-on experience with securing AWS resources, focusing
 
 - ***Set Up Amazon S3 Default Encryption via KMS***
     -  Navigate to Amazon S3 using the shortcut bar or the unified search bar.
-    -  Click on the bucket, and navigate to the Properties tab.
+    -  Create a new  bucket, and navigate to the Properties tab.
     -  Scroll down to Default encryption, and click Edit.
     -  Under Default encryption, set the following values:
     -  Encryption key type: Select AWS Key Management Service key (SSE-KMS).
@@ -219,7 +219,14 @@ This workshop provides hands-on experience with securing AWS resources, focusing
     -  Once you see the Upload succeeded banner, click Close in the upper right corner.
     -  Click on the file you uploaded.
     -  Scroll down to Server-side encryption settings to confirm you successfully implemented the KMS key.
-- ***
+
+- ***Schedule AWS KMS Key Deletion
+    -  Under Encryption key ARN, click on the key ARN.
+    -  In the upper right corner, click on the key actions dropdown menu, and select Schedule key deletion.
+    -  Under Waiting period, enter 7 days.
+    -  Under Confirmation, select the checkbox next to Confirm that you want to schedule these keys for deletion after a 7 day waiting period.
+    -  Click Schedule deletion.
+      
 ---
 ## 8. AWS Security Hub
 
