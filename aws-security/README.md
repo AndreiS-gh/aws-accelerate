@@ -15,15 +15,7 @@ This workshop provides hands-on experience with securing AWS resources, focusing
 
 ---
 
-## Workshop Agenda
 
-1. [Building a Secure Network Architecture](#1-building-a-secure-network-architecture)
-2. [Securing EC2 Instances](#2-securing-ec2-instances)
-3. [Monitoring with CloudWatch](#3-monitoring-with-cloudwatch)
-4. [Auditing with CloudTrail](#4-auditing-with-cloudtrail)
-5. [Data Protection and Encryption with AWS KMS](#5-data-protection-and-encryption-with-aws-kms)
-
----
 
 ## 1. Building a Secure Network Architecture
 
