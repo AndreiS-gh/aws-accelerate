@@ -253,7 +253,6 @@ This workshop provides hands-on experience with securing AWS resources, focusing
 2. **Delete Security Groups and ACLs:** Remove any custom Security Groups and Network ACLs.
 3. **Remove CloudWatch Alarms:** Delete all CloudWatch alarms.
 4. **Delete CloudTrail Trails:** Delete CloudTrail trails and associated S3 buckets.
-5. **Revoke IAM Permissions:** Revoke temporary IAM permissions.
-6. **KMS Key Deletion:** Schedule deletion of any CMKs if they are not needed.
+
 
 ---
