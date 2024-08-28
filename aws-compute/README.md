@@ -33,7 +33,7 @@ export AWS_DEFAULT_REGION="eu-central-1"
 export VPC_ID=$(aws ec2 describe-vpcs --filters "Name=tag:Name,Values= accelerate-labs-vpc" --query 'Vpcs[0].VpcId' --output text)
 
 ### Get Public Subnet ID 1
-export PUBLIC_SUBNET_ID_1=$(aws ec2 describe-subnets --filters "Name=tag:Name,Values= accelerate-labs-public-subnet-1" --query 'Subnets[0].SubnetId' --output text)
+export PUBLIC_SUBNET_ID_1=$(aws ec2 describe-subnets --filters "Name=tag:Name,Values=accelerate-labs-public-subnet-1" --query 'Subnets[0].SubnetId' --output text)
 
 ### Get Public Subnet ID 2
 export PUBLIC_SUBNET_ID_2=$(aws ec2 describe-subnets --filters "Name=tag:Name,Values= accelerate-labs-public-subnet-2" --query 'Subnets[0].SubnetId' --output text)
@@ -62,14 +62,14 @@ aws ec2 create-key-pair --key-name $KEY_NAME --query 'KeyMaterial' --output text
 chmod 400 ${KEY_NAME}.pem
 ```
 
-02. **Launch an EC2 instance in the public subnet**
+02. **Launch an EC2 instance in the public subnet (make sure ZScaler is disabled)**
 - AMI: `Amazon Linux 2023 AMI`
 - Instance Type: `t2.micro`
 - Key pair: the key you created
 - Network: `accelerate-labs-vpc`, Subnet: `accelerate-labs-public-subnet-1`
 - Auto-assign public IP: `Enable`
 - Security Group: `Create security group`. Use your name for the SG name and description. `e.g. john-doe`
-- Inbound Security Group Rules: select "SSH" under `Type` and "My IP" under `Source type` (make sure VPN is disabled)
+- Inbound Security Group Rules: select "SSH" under `Type` and "My IP" under `Source type` (again, make sure ZScaler is disabled)
 - Launch the instance.
 
 03. **View if instance is ready to connect**
@@ -85,94 +85,128 @@ chmod 400 ${KEY_NAME}.pem
 - reboot instance
 
 06. **Install Nginx and create a new AMI**
-- yum install nginx -y
-- systemctl enable nginx
-- systemctl start nginx
-- systemctl status nginx
-- curl localhost
+```bash
+yum install nginx -y
+systemctl enable nginx
+systemctl start nginx
+systemctl status nginx
+curl localhost
+```
 - Stop instance
 - Create AMI (Actions > Image and templates > Create image)
 - Wait for the AMI to be ready
 - Terminate the public instance
 
 07. **Launch a new EC2 instance in the private subnet from the new AMI**
-
-08. **Add an instance role to the EC2 instance**
-
-09. **Connect to the EC2 instance using SSM**
-
-11. **Change the EC2 instance type**
-
-12. **Add a start/stop schedule for the EC2 instance**
-
-13. **Create a static webpage using Autoscaling Groups and Load Balancers**
-- Create a launch template
--- Add name and description
--- Choose my AMIs and select your newly create AMI
--- Instance Type: `t2.micro`
--- Key pair: the key you created
--- Subnet: `Don't include in launch template`
--- Security Group: `Select existing security group`. Select the SG you created
--- Advanced details 
-  > Select the IAM instance profile
-  > User data: 
-  ```bash
-  hostname -s > /var/www/html/index.html
-  date >> /var/www/html/index.html
-  ```
-- Create ASG
--- Select your template
--- Add a name and click next
--- Select the accelerate-labs-vpc
--- Select the 2 private subnets and click next
--- Attach to a new load balancer > Application Load Balancer > Internet-facing
--- Select the public subnets
--- Create target groups
--- Turn on ELB health checks
--- Health check grace period: 30 seconds and click next
--- Capacity: min 1, desired 1, max 3
--- Target tracking scaling policy
--- Average CPU utilizaiton
--- Target value:30 and click Next
-
-
-
-- Connect to the intance in the private network
-- Create a new ASG with 1 minimum, 2 maximum and 1 desired number of instances
-- Add the current date to the the nginx default webpage and automatic start for nginx in the userdata script
--- hostname -s > /usr/share/nginx/html/index.html
--- date >> /usr/share/nginx/html/index.html
-- Create a Load Balancer in the public subnets that has this ASG as a target
-- Connect to an EC2 instance from the ASG and increase it's CPU load
+- AMI: previuously created AMI
+- Instance Type: `t2.micro`
+- Key pair: the key you created
+- Network: `accelerate-labs-vpc`, Subnet: `accelerate-labs-private-subnet-1`
+- Auto-assign public IP: `Disable`
+- Security Group: `Select existing security group`. Use the SG you created in the previous step
+- Advanced details > IAM instance profile: Select > accelerate-labs-InstanceProfile
+- Advanced details > User data: 
     ```bash
-    yes&
-    ```    
-- **Check webpage status from the LB url. Refresh multiple times to view the different launch date times**
+    #!/bin/bash
+    hostname -s > /usr/share/nginx/html/index.html
+    echo "" >> /usr/share/nginx/html/index.html
+    date >> /usr/share/nginx/html/index.html
+    ```
+- Launch the instance.
+
+08. **Connect to the EC2 instance using SSM and test Nginx**
+```
+curl localhost
+```
+
+09. **Update security groups and connect to private instance using SSH**
+- start public instance
+- and SSH and HTTP access to VPC CIDR
+- connect to public instance
+- copy your SSH key to the public instance and set correct permissions
+- run a curl against the IP of the private instance
+- ssh from public instance to private instance
+
+10. **Change the EC2 instance type**
+- connect to the public instance and check it's memory
+- stop the instance
+- change instance type to small
+- start the instance
+- connect to the instance and check the memory again
+
+11. **Create a static webpage using Autoscaling Groups and Load Balancers**
+- Create a launch template
+  * Add name and description
+  * Choose my AMIs and select your newly create AMI
+  * Instance Type: `t2.small`
+  * Key pair: the key you created
+  * Subnet: `Don't include in launch template`
+  * Security Group: `Select existing security group`. Select the SG you created
+  * Advanced details 
+    > Select the IAM instance profile
+    > User data: 
+      ```bash
+      #!/bin/bash
+      hostname -s > /usr/share/nginx/html/index.html
+      echo "---" >> /usr/share/nginx/html/index.html
+      date >> /usr/share/nginx/html/index.html
+      ```
+
+- Create ASG
+  * Select your template
+  * Add a name and click next
+  * Select the accelerate-labs-vpc
+  * Select the 2 private subnets and click next
+  * Attach to a new load balancer > Application Load Balancer > Internet-facing
+  * Select the public subnets
+  * Create target groups
+  * Turn on ELB health checks
+  * Health check grace period: 30 seconds
+  * Enable group metrics collection within CloudWatch and click next
+  * Capacity: min 1, desired 1, max 3
+  * Target tracking scaling policy
+  * Average CPU utilizaiton
+  * Target value:30 and click Next
+  * Tags: Name > Your name with `-asg at` the end and click Next
+  * Create Auto Scaling group
+
+- While the resources are creating, update your security group and give yourself access on port 80
+
+12. **Check the webpage from the LB url.**
+
+13. **Connect to one of the EC2 instances and increase load**
+- run the yes command"
+```
+yes > /dev/null &
+```
+- check alarms
+
+14. **Check the webpage from the LB url. Refresh multiple times to view the different launch date times**
 
 
 ## D. Lambda operations
 
-1. **Create IAM Role and Instance Profile for SSM**
+1. **A python hello world lambda function from blueprints**
 
-    - **Create IAM Role**
+2. **Create a test event for the lambda function and test it**
 
-        ```bash
-        aws iam create-role --role-name EC2SSMRole-${NAME} --assume-role-policy-document '{
-          "Version": "2012-10-17",
-          "Statement": [
-            {
-              "Effect": "Allow",
-              "Principal": {
-                "Service": "ec2.amazonaws.com"
-              },
-              "Action": "sts:AssumeRole"
-            }
-          ]
-        }'
-        ```
+3. **Update the code of the lambda with the code in lambda.py and deploy the new function**
 
-    - **Attach SSM Managed Instance Core Policy to the Role**
+4. **Update the test with the example request from request.json and test the new function**
 
-        ```bash
-        aws iam attach-role-policy --role-name EC2SSMRole-${NAME} --policy-arn arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
-        ```
+5. **Attach the function to your load balancer and access the url of your ALB**
+
+6. **Check the lambda logs**
+
+## E. Delete resources
+
+- lambda funciton
+- load balancer
+- target groups
+- ASG
+- launch template
+- AMI and snapshot
+- ec2 instances
+- cloudwatch log groups
+- security groups
+- key pair
