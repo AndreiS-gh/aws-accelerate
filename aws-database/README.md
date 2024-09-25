@@ -51,7 +51,9 @@ Before you begin, ensure you have the following ready:
 - Click `Create item`
 - Add 3 items
 e.g.
+
 | Artist | Song | Rating | Trend |
+| --- | --- | --- | --- |
 | Shaboozey | A Bar Song | 1 | Up |
 | Sabrina Carpenter | Espresso | 2 | Stable |
 | Sabrina Carpenter | Taste | 3 | Down |
