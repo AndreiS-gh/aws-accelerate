@@ -1,7 +1,6 @@
 # AWS Compute Lab Guide
 
 Welcome to the AWS App Integration Lab Guide.
-This guide provides step-by-step instructions for deploying and configuring AWS compute services using the AWS Command Line Interface (CLI) or Console.
 This lab is designed to help you understand and implement essential AWS services like SQS, SNS and CloudWatch.
 
 By following this guide, you will gain hands-on experience with creating a SQS and how to send/view messages, creating a SNS and how to add subscriptions, use CloudWatch to search logs, expose EC2 metrics and create dashboards.
@@ -126,6 +125,7 @@ sudo yum install amazon-cloudwatch-agent
 - Copy content of file `config.json` to `/opt/aws/amazon-cloudwatch-agent/bin/config.json` on your EC2
 - Start and enable cloudwatch agent
 ```
+amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -s -c file:/opt/aws/amazon-cloudwatch-agent/bin/config.json
 systemctl start amazon-cloudwatch-agent
 systemctl enable amazon-cloudwatch-agent
 ```
