@@ -62,7 +62,7 @@ Before you begin, ensure you have the following ready:
 
     - Initialize Terraform: `terraform init`
     - Plan your deployment (showing the auto tfvars part): `terraform plan --var-file=terraform.tfvars.json`
-    - Import the S3 bucket: `terraform import aws_s3_bucket.my-state-bucket bkt-awsacc-w3-euc1-savua`
+    - Import the S3 bucket: `terraform import aws_s3_bucket.my-state-bucket bkt-awsacc-w3-euc1-<change_me_add_your_username>`
     - Apply changes (visualize enforcement of tags): `terraform apply --var-file=terraform.tfvars.json`
 
 ## C. Deploy a VPC
