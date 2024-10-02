@@ -50,6 +50,7 @@
 **/build/
 **/dist/
 **/output/
+**/.setup/*
 
 # Log Files
 **/*.log
